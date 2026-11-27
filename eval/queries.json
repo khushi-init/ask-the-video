@@ -1,0 +1,20 @@
+[
+  {"type": "speech", "query": "grandpa overheard them last night", "start": 130, "end": 134},
+  {"type": "speech", "query": "he says it wasn't his fault", "start": 136, "end": 140},
+  {"type": "speech", "query": "telling someone they're a rock star before the mission", "start": 190, "end": 196},
+  {"type": "speech", "query": "only two minutes to go", "start": 338, "end": 344},
+  {"type": "speech", "query": "he apologises for being a jerk when he was younger", "start": 356, "end": 364},
+  {"type": "speech", "query": "you broke my heart", "start": 382, "end": 390},
+  {"type": "speech", "query": "we need to stop the mission now", "start": 506, "end": 510},
+  {"type": "speech", "query": "everything is different now Celia", "start": 514, "end": 518},
+  {"type": "visual", "query": "brain on a dish", "start": 56, "end": 60},
+  {"type": "visual", "query": "movie title appears", "start": 64, "end": 68},
+  {"type": "visual", "query": "newspaper about a dangerous robot", "start": 78, "end": 82},
+  {"type": "visual", "query": "giant flying ship above the houses", "start": 88, "end": 114},
+  {"type": "visual", "query": "robots battling on a tower", "start": 438, "end": 442},
+  {"type": "visual", "query": "team in white hazmat suits", "start": 462, "end": 476},
+  {"type": "visual", "query": "guy swinging on a rope from a monster", "start": 486, "end": 502},
+  {"type": "visual", "query": "lonely guy sitting in a pile of broken robots", "start": 716, "end": 728},
+  {"type": "mixed", "query": "everyone cheering go go go at the controls", "start": 206, "end": 216},
+  {"type": "mixed", "query": "someone shouts action and he faces the huge machine", "start": 286, "end": 294}
+]
