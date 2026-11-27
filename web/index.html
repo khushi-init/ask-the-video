@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask the Video</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F1EFE9;   /* off-white */
+      --ink:   #141414;   /* near-black */
+      --muted: #7A7872;
+      --px: 4px;          /* one "pixel" */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    main { max-width: 760px; margin: 64px auto; padding: 0 24px; }
+
+    /* ---------- pixel border: square box with notched corners ---------- */
+    .px {
+      background: var(--paper);
+      margin: var(--px);
+      box-shadow:
+        0 calc(-1 * var(--px)) 0 0 var(--ink),
+        0 var(--px) 0 0 var(--ink),
+        calc(-1 * var(--px)) 0 0 0 var(--ink),
+        var(--px) 0 0 0 var(--ink);
+    }
+
+    /* ---------- header ---------- */
+    h1 {
+      font-family: "Silkscreen", monospace;
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 0.95;
+      letter-spacing: 1px;
+    }
+    .tagline { margin: 16px 0 40px; max-width: 420px; }
+
+    /* ---------- video window ---------- */
+    .window-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 12px;
+      border-bottom: var(--px) solid var(--ink);
+      font-size: 12px;
+    }
+    .window-bar .dots { display: flex; gap: 6px; }
+    .window-bar .dots span { width: 10px; height: 10px; background: var(--ink); }
+    video { display: block; width: 100%; background: var(--ink); }
+
+    /* ---------- search ---------- */
+    .search { display: flex; gap: 16px; margin-top: 32px; }
+    .search .field { flex: 1; display: flex; align-items: center; padding: 0 14px; }
+    .search .field::before { content: ">"; margin-right: 10px; font-weight: 500; }
+    input {
+      flex: 1; border: none; outline: none; background: transparent;
+      font: inherit; font-size: 15px; color: var(--ink); padding: 14px 0;
+    }
+    input::placeholder { color: var(--muted); }
+
+    button {
+      font-family: "Silkscreen", monospace; font-size: 14px;
+      border: none; color: var(--ink); cursor: pointer;
+      padding: 0 18px; display: flex; align-items: center; gap: 8px;
+    }
+    button:hover, button.on { background: var(--ink); color: var(--paper); }
+    button:disabled { opacity: 0.35; cursor: not-allowed; }
+    button svg { width: 16px; height: 16px; fill: currentColor; shape-rendering: crispEdges; }
+
+    /* ---------- example chips ---------- */
+    .examples { margin: 18px 0 0; color: var(--muted); font-size: 12px; }
+    .examples a { color: var(--ink); cursor: pointer; text-decoration: none;
+                  border-bottom: 2px dotted var(--ink); margin-left: 8px; }
+    .examples a:hover { background: var(--ink); color: var(--paper); }
+
+    /* ---------- results ---------- */
+    #status { font-family: "Silkscreen", monospace; margin: 32px 0 12px; min-height: 20px; }
+    .blink::after { content: "_"; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .result {
+      display: grid; grid-template-columns: 72px 1fr; gap: 16px;
+      padding: 14px 12px; cursor: pointer;
+      border-top: 2px dashed var(--ink);
+    }
+    .result:last-child { border-bottom: 2px dashed var(--ink); }
+    .result:hover { background: var(--ink); color: var(--paper); }
+    .result:hover .speech { color: var(--paper); opacity: 0.7; }
+    .time { font-family: "Silkscreen", monospace; font-size: 15px; }
+    .speech { color: var(--muted); margin-top: 4px; }
+
+    footer { margin-top: 64px; font-size: 11px; color: var(--muted); }
+    footer a { color: inherit; }
+
+    @media (max-width: 560px) { h1 { font-size: 40px; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>ASK THE<br>VIDEO</h1>
+  <p class="tagline">Describe a moment in a film (or just say it) and jump straight to it.</p>
+
+  <div class="px">
+    <div class="window-bar">
+      <span>tears_of_steel.mp4</span>
+      <span class="dots"><span></span><span></span><span></span></span>
+    </div>
+    <video id="video" src="/media/tears_of_steel.mp4" controls></video>
+  </div>
+
+  <div class="search">
+    <label class="field px">
+      <input id="query" placeholder="e.g. rocket launch" autocomplete="off">
+    </label>
+    <button id="go" class="px">SEARCH</button>
+    <button id="mic" class="px" title="Search by voice">
+      <!-- pixel microphone -->
+      <svg viewBox="0 0 8 8" aria-hidden="true">
+        <rect x="3" y="0" width="2" height="1"/><rect x="2" y="1" width="4" height="3"/>
+        <rect x="1" y="3" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/>
+        <rect x="2" y="4" width="4" height="1"/><rect x="3" y="5" width="2" height="2"/>
+        <rect x="2" y="7" width="4" height="1"/>
+      </svg>
+      MIC
+    </button>
+  </div>
+
+  <p class="examples">try:
+    <a data-q="rocket launch">rocket launch</a>
+    <a data-q="couple arguing on a bridge">couple on a bridge</a>
+    <a data-q="she is scared of the robot hand">robot hand</a>
+  </p>
+
+  <div id="status"></div>
+  <div id="results"></div>
+
+  <footer>
+    Film: Tears of Steel &copy; Blender Foundation &middot;
+    <a href="https://mango.blender.org">mango.blender.org</a> &middot; CC BY
+  </footer>
+</main>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const video = $("video"), query = $("query"), results = $("results"),
+        status = $("status"), mic = $("mic");
+
+  const fmt = s => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+  function setStatus(text, blinking = false) {
+    status.textContent = text;
+    status.classList.toggle("blink", blinking);
+  }
+
+  async function search(q) {
+    if (!q.trim()) return;
+    setStatus("SEARCHING", true);
+    results.innerHTML = "";
+
+    try {
+      const res = await fetch(`/search?q=${encodeURIComponent(q)}`);
+      const hits = await res.json();
+      setStatus(hits.length ? `${hits.length} MOMENTS FOUND` : "NOTHING FOUND");
+
+      hits.forEach(h => {
+        const row = document.createElement("div");
+        row.className = "result";
+        row.innerHTML = `<span class="time"></span><div><div class="scene"></div><div class="speech"></div></div>`;
+        row.querySelector(".time").textContent = fmt(h.time);
+        row.querySelector(".scene").textContent = h.scene;
+        if (h.speech) row.querySelector(".speech").textContent = `"${h.speech}"`;
+        row.onclick = () => { video.currentTime = h.time; video.play(); };
+        results.appendChild(row);
+      });
+
+      if (hits.length) { video.currentTime = hits[0].time; video.play(); }
+    } catch (err) {
+      setStatus("ERROR: IS THE SERVER RUNNING?");
+    }
+  }
+
+  query.addEventListener("keydown", e => { if (e.key === "Enter") search(query.value); });
+  $("go").onclick = () => search(query.value);
+  document.querySelectorAll(".examples a").forEach(a =>
+    a.onclick = () => { query.value = a.dataset.q; search(a.dataset.q); });
+
+  // voice search (Chrome & Safari)
+  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (Rec) {
+    const rec = new Rec();
+    rec.lang = "en-US";
+    mic.onclick = () => { rec.start(); mic.classList.add("on"); setStatus("LISTENING", true); };
+    rec.onresult = e => { query.value = e.results[0][0].transcript; search(query.value); };
+    rec.onend = () => mic.classList.remove("on");
+    rec.onerror = () => setStatus("COULD NOT HEAR YOU, TRY AGAIN");
+  } else {
+    mic.disabled = true;
+    mic.title = "Voice search not supported in this browser";
+  }
+</script>
+</body>
+</html>
