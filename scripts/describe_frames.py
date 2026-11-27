@@ -12,8 +12,9 @@ FRAMES_DIR = Path("data/frames")
 OUT_FILE = Path("data/scenes.json")
 SECONDS_PER_FRAME = 2
 
-PROMPT = ("Describe this movie frame in one sentence: who or what is visible, "
-          "what is happening, the setting, and the mood. Be specific.")
+PROMPT = ("Describe only what is visible in this video frame in one short sentence "
+          "(max 25 words): people, objects, action, setting, mood. "
+          "Do NOT guess which movie or show this is, and do not name any films or actors.")
 
 # resume support: keep what we already have
 scenes = json.loads(OUT_FILE.read_text()) if OUT_FILE.exists() else []
